@@ -753,6 +753,13 @@
     line-height: 1.3;
   }
 
+  .game-cell .game-pix {
+    font-size: 0.8rem;
+    color: var(--accent-2);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
   .empty-msg {
     text-align: center;
     color: var(--text-muted);
@@ -865,6 +872,10 @@
         <div class="field">
           <label for="game-input">Jogo</label>
           <input type="text" id="game-input" placeholder="Ex: Fortune Tiger" required>
+        </div>
+        <div class="field">
+          <label for="pix-input">Pix (opcional)</label>
+          <input type="text" id="pix-input" placeholder="Ex: R$ 10,00">
         </div>
         <div class="field">
           <label for="description-input">Descrição (opcional)</label>
@@ -1016,6 +1027,7 @@
 
   var form = document.getElementById("request-form");
   var gameInput = document.getElementById("game-input");
+  var pixInput = document.getElementById("pix-input");
   var descriptionInput = document.getElementById("description-input");
   var participantInput = document.getElementById("participant-input");
   var dateInput = document.getElementById("date-input");
@@ -1112,7 +1124,7 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(requests));
   }
 
-  function addRequest(jogo, participante, data, descricao, prioridade) {
+  function addRequest(jogo, participante, data, descricao, pix, prioridade) {
     requests.push({
       id: uid(),
       jogo: jogo,
@@ -1120,6 +1132,7 @@
       data: data,
       hora: nowTime(),
       descricao: descricao,
+      pix: pix,
       prioridade: !!prioridade,
       ordem: nextOrdem(),
       status: "pendente"
@@ -1273,6 +1286,13 @@
     }
 
     gameTd.appendChild(nameRow);
+
+    if (r.pix) {
+      var pixSpan = document.createElement("span");
+      pixSpan.className = "game-pix";
+      pixSpan.textContent = "💠 Pix: " + r.pix;
+      gameTd.appendChild(pixSpan);
+    }
 
     if (r.descricao) {
       var descSpan = document.createElement("span");
@@ -1558,14 +1578,16 @@
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var jogo = gameInput.value.trim();
+    var pix = pixInput.value.trim();
     var descricao = descriptionInput.value.trim();
     var participante = participantInput.value.trim();
     var data = dateInput.value;
     var prioridade = priorityInput.checked;
     if (!jogo || !data) return;
 
-    addRequest(jogo, participante, data, descricao, prioridade);
+    addRequest(jogo, participante, data, descricao, pix, prioridade);
     gameInput.value = "";
+    pixInput.value = "";
     descriptionInput.value = "";
     participantInput.value = "";
     priorityInput.checked = false;
@@ -1646,6 +1668,7 @@
         var data = item.data;
         var hora = typeof item.hora === "string" ? item.hora.trim() : "";
         var descricao = typeof item.descricao === "string" ? item.descricao.trim() : "";
+        var pix = typeof item.pix === "string" ? item.pix.trim() : "";
         var status = item.status === "ganhou" ? "ganhou" : "jogou";
 
         var alreadyExists = requests.some(function (r) {
@@ -1653,7 +1676,7 @@
         });
         if (alreadyExists) return;
 
-        requests.push({ id: uid(), jogo: jogo, participante: participante, data: data, hora: hora, descricao: descricao, status: status });
+        requests.push({ id: uid(), jogo: jogo, participante: participante, data: data, hora: hora, descricao: descricao, pix: pix, status: status });
         added++;
       });
 
