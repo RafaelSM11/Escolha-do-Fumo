@@ -1,40 +1,91 @@
-# Escolha do Fumo
+# Transmissão de Tela
 
-Painel de pedidos da live + aba de **Transmissão de tela** com permissão controlada pelo admin.
+Site simples para você compartilhar sua tela ao vivo com dezenas ou centenas de
+pessoas assistindo ao mesmo tempo, usando [LiveKit Cloud](https://cloud.livekit.io)
+como infraestrutura de transmissão (WebRTC/SFU). O plano gratuito da LiveKit Cloud
+inclui 100 conexões simultâneas e 5.000 minutos de WebRTC por mês, o que já cobre
+uma transmissão com dezenas a ~100 espectadores por algumas horas.
 
-## Rodando localmente
+Duas páginas:
+
+- `/broadcast.html` — quem vai apresentar, compartilha a tela.
+- `/watch.html` — quem vai assistir, entra pelo link que o apresentador compartilha.
+
+## 1. Criar uma conta gratuita na LiveKit Cloud
+
+1. Acesse https://cloud.livekit.io e crie uma conta (não pede cartão de crédito).
+2. Crie um projeto.
+3. Em **Settings → Keys**, copie o `API Key`, o `API Secret` e a `WebSocket URL`
+   do projeto (algo como `wss://seu-projeto.livekit.cloud`).
+
+## 2. Configurar o projeto
 
 ```bash
 npm install
-cp .env.example .env   # preencha as variáveis (veja abaixo)
+cp .env.example .env
+```
+
+Edite o `.env` e preencha:
+
+```
+LIVEKIT_API_KEY=...
+LIVEKIT_API_SECRET=...
+LIVEKIT_URL=wss://seu-projeto.livekit.cloud
+HOST_PASSWORD=escolha-uma-senha   # opcional: protege quem pode começar a transmitir
+```
+
+## 3. Rodar localmente (para testar)
+
+```bash
 npm start
 ```
 
-Abra `http://localhost:3000`.
+Abra http://localhost:3000. Isso funciona para testar sozinho, mas para que outras
+pessoas entrem pela internet o site precisa estar hospedado publicamente — veja o
+passo 4.
 
-## Configurando a transmissão de tela
+## 4. Colocar o site no ar (para outras pessoas acessarem)
 
-A aba "Transmissão" usa [LiveKit](https://livekit.io) (WebRTC) para levar sua tela a vários espectadores ao vivo. Passos:
+O jeito mais simples é usar um serviço gratuito de hospedagem Node, por exemplo o
+[Render](https://render.com):
 
-1. Crie uma conta gratuita em https://cloud.livekit.io e um projeto.
-2. Em **Settings → Keys**, copie a **API Key**, o **API Secret** e a **URL do projeto** (algo como `wss://seu-projeto.livekit.cloud`).
-3. Preencha o `.env`:
-   - `LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`
-   - `ADMIN_PASSWORD`: uma senha só sua, usada para entrar como admin na aba Transmissão.
-4. Rode `npm start`.
+1. Suba esta pasta para um repositório no GitHub.
+2. No Render, clique em **New → Web Service**, conecte o repositório.
+3. Build command: `npm install` — Start command: `npm start`.
+4. Em **Environment**, adicione as mesmas variáveis do `.env`
+   (`LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, `LIVEKIT_URL`, `HOST_PASSWORD`).
+5. Depois do deploy, você terá uma URL pública tipo `https://seu-site.onrender.com`.
 
-Na aba Transmissão:
-- Você (admin) entra marcando "Sou o admin" + sua senha, e já pode clicar em **Compartilhar minha tela**.
-- Qualquer espectador pode clicar em **Pedir para transmitir**; você recebe o pedido em tempo real e aprova ou nega.
-- Você pode **Encerrar** a transmissão de qualquer pessoa a qualquer momento.
+Alternativas equivalentes: Railway, Fly.io, ou qualquer host que rode uma aplicação
+Node.js com uma porta HTTP exposta.
 
-## Publicando online
+## 5. Como usar
 
-Este projeto agora tem um pequeno servidor Node (`server.js`), então não dá mais para hospedar só como site estático (ex: GitHub Pages puro). Sugestão: [Render](https://render.com) (plano gratuito).
+1. Você (apresentador) abre `https://seu-site/broadcast.html`, escolhe um nome de
+   sala, digita a senha (se configurou uma) e clica em **Iniciar transmissão**. O
+   navegador vai pedir para escolher qual tela/janela compartilhar.
+2. A página mostra um link para compartilhar, algo como
+   `https://seu-site/watch.html?room=aula-hoje`. Envie esse link para quem for
+   assistir (WhatsApp, e-mail, etc.).
+3. Cada pessoa abre o link, digita o nome e clica em **Entrar** — a tela aparece
+   ao vivo, sem poder falar ou compartilhar nada (modo somente visualização).
 
-1. Suba este repositório no GitHub (se ainda não estiver).
-2. No Render, crie um **Web Service** apontando para o repositório.
-   - Build command: `npm install`
-   - Start command: `npm start`
-3. Em **Environment**, adicione as mesmas variáveis do `.env` (`LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`, `ADMIN_PASSWORD`).
-4. Deploy. O Render já serve tudo em HTTPS, necessário para compartilhamento de tela funcionar no navegador.
+## Limites e escala
+
+- **Gratuito:** até ~100 conexões simultâneas via LiveKit Cloud free tier.
+- Se a plateia crescer além disso (centenas a milhares), o próximo passo é o plano
+  pago da LiveKit Cloud (a partir de $50/mês) ou considerar um serviço de streaming
+  tipo Twitch/YouTube Live com CDN de verdade.
+- A senha de apresentador (`HOST_PASSWORD`) é uma proteção simples para impedir que
+  qualquer pessoa com o link do site inicie uma transmissão em seu nome. Qualquer
+  pessoa com o link de um espectador só consegue assistir, nunca publicar.
+
+## Estrutura do projeto
+
+```
+server.js            servidor Express: gera tokens de acesso da LiveKit
+public/index.html     página inicial com os dois links
+public/broadcast.html  página do apresentador
+public/watch.html      página de quem assiste
+public/style.css       estilos compartilhados
+```

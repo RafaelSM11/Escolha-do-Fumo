@@ -1,27 +1,20 @@
 {
-  "name": "escolha-do-fumo",
+  "name": "screen-stream",
   "version": "1.0.0",
-  "description": "",
+  "description": "Transmita sua tela ao vivo para varias pessoas assistirem, usando LiveKit Cloud.",
   "main": "server.js",
+  "type": "commonjs",
   "scripts": {
     "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/RafaelSM11/Escolha-do-Fumo.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/RafaelSM11/Escolha-do-Fumo/issues"
-  },
-  "homepage": "https://github.com/RafaelSM11/Escolha-do-Fumo#readme",
   "dependencies": {
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "livekit-client": "^2.22.0",
-    "livekit-server-sdk": "^2.17.0"
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "livekit-server-sdk": "^2.9.2"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
