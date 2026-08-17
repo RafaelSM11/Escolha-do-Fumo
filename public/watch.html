@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Assistir transmissão</title>
+<link rel="stylesheet" href="/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Assistir transmissão <span id="liveBadge" class="badge" style="display:none;">AO VIVO</span></h1>
+
+    <div class="card" id="joinCard">
+      <div class="row">
+        <div>
+          <label for="roomInput">Nome da sala</label>
+          <input type="text" id="roomInput" placeholder="ex: aula-hoje" />
+        </div>
+        <div>
+          <label for="nameInput">Seu nome</label>
+          <input type="text" id="nameInput" placeholder="Convidado" />
+        </div>
+      </div>
+      <button class="btn btn-primary" id="joinBtn">Entrar</button>
+      <p class="status" id="joinStatus"></p>
+    </div>
+
+    <div class="card" id="watchCard" style="display:none;">
+      <video id="remoteVideo" autoplay playsinline></video>
+      <p class="viewer-count" id="participantCount"></p>
+      <p class="status" id="watchStatus"></p>
+    </div>
+  </div>
+
+  <script src="/watch.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Transmitir tela</title>
+<link rel="stylesheet" href="/style.css" />
+<script src="https://cdn.jsdelivr.net/npm/livekit-client/dist/livekit-client.umd.min.js"></script>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Transmitir minha tela <span id="liveBadge" class="badge" style="display:none;">AO VIVO</span></h1>
+
+    <div class="card" id="setupCard">
+      <div class="row">
+        <div>
+          <label for="roomInput">Nome da sala</label>
+          <input type="text" id="roomInput" placeholder="ex: aula-hoje" />
+        </div>
+        <div>
+          <label for="nameInput">Seu nome</label>
+          <input type="text" id="nameInput" placeholder="Apresentador" />
+        </div>
+      </div>
+      <div id="passwordRow">
+        <label for="passwordInput">Senha de apresentador (se o site exigir uma)</label>
+        <input type="password" id="passwordInput" placeholder="senha" />
+      </div>
+      <button class="btn btn-primary" id="startBtn">Iniciar transmissão</button>
+      <p class="status" id="setupStatus"></p>
+    </div>
+
+    <div class="card" id="liveCard" style="display:none;">
+      <video id="localPreview" autoplay muted playsinline></video>
+      <p class="viewer-count">Espectadores conectados: <strong id="viewerCount">0</strong></p>
+      <div class="share-link">
+        <input type="text" id="shareLink" readonly />
+        <button class="btn btn-secondary" id="copyBtn">Copiar link</button>
+      </div>
+      <p class="status" id="liveStatus"></p>
+      <button class="btn" id="stopBtn" style="margin-top:14px; border-color:#ff5c5c; color:#ff5c5c;">Encerrar transmissão</button>
+    </div>
+
+    <footer class="hint">Peça para quem for assistir abrir o link acima. Feche esta aba para encerrar a transmissão.</footer>
+  </div>
+
+  <script src="/broadcast.js"></script>
+</body>
+</html>
