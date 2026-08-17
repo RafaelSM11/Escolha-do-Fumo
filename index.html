@@ -843,6 +843,177 @@
   tbody td.rank-name {
     font-weight: 700;
   }
+
+  .live-wrap {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: clamp(1.2rem, 3vw, 2rem) clamp(1rem, 4vw, 2.5rem) 4rem;
+  }
+
+  .live-join {
+    max-width: 420px;
+    margin: 2rem auto;
+  }
+
+  .live-join .field-checkbox {
+    margin-bottom: 0.3rem;
+  }
+
+  .live-join .btn-primary {
+    margin-top: 0.6rem;
+  }
+
+  .live-error {
+    color: var(--danger);
+    background: var(--danger-bg);
+    border-radius: 8px;
+    padding: 0.5rem 0.7rem;
+    font-size: 0.82rem;
+    margin: 0.5rem 0 0;
+  }
+
+  .live-error:empty {
+    display: none;
+  }
+
+  .live-topbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.7rem;
+    margin-bottom: 1rem;
+  }
+
+  .live-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .live-status .dot-live {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+  }
+
+  .live-status.connected .dot-live {
+    background: var(--success);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--success) 60%, transparent);
+  }
+
+  .live-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .btn-danger {
+    background: transparent;
+    border: 1px solid color-mix(in srgb, var(--danger) 55%, transparent);
+    color: var(--danger);
+    border-radius: 999px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.82rem;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .btn-danger:hover {
+    background: var(--danger-bg);
+  }
+
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .video-tile {
+    position: relative;
+    background: #000;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+  }
+
+  .video-tile video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    background: #000;
+  }
+
+  .video-tile .video-label {
+    position: absolute;
+    left: 0.6rem;
+    bottom: 0.6rem;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 0.78rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+  }
+
+  .video-tile .video-stop {
+    position: absolute;
+    right: 0.6rem;
+    top: 0.6rem;
+  }
+
+  .live-empty {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 3rem 1rem;
+    font-size: 0.92rem;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 1.25rem;
+  }
+
+  .request-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    padding: 0.6rem 0.7rem;
+    border-radius: 10px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    margin-bottom: 0.5rem;
+  }
+
+  .request-row .req-actions {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .toast-stack {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 320px;
+  }
+
+  .toast {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    box-shadow: var(--shadow);
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+    font-size: 0.85rem;
+  }
 </style>
 </head>
 <body>
@@ -859,6 +1030,7 @@
     <div class="tabbar-inner" role="tablist">
       <button class="tab-btn active" id="tab-pedidos" type="button" role="tab" aria-selected="true">Pedidos</button>
       <button class="tab-btn" id="tab-ranking" type="button" role="tab" aria-selected="false">Ranking</button>
+      <button class="tab-btn" id="tab-transmissao" type="button" role="tab" aria-selected="false">Transmissão</button>
     </div>
   </nav>
 </div>
@@ -1017,6 +1189,51 @@
   </div>
 </div>
 
+<div id="view-transmissao" class="view">
+  <div class="live-wrap">
+
+    <section id="live-join-card" class="card live-join">
+      <h2>Entrar na transmissão</h2>
+      <div class="field">
+        <label for="live-name-input">Seu nome</label>
+        <input type="text" id="live-name-input" placeholder="Ex: João" autocomplete="off">
+      </div>
+      <label class="field-checkbox">
+        <input type="checkbox" id="live-admin-check">
+        <span>Sou o admin (dono da live)</span>
+      </label>
+      <div class="field" id="live-admin-pass-field" hidden>
+        <label for="live-admin-pass-input">Senha de admin</label>
+        <input type="password" id="live-admin-pass-input" placeholder="Senha" autocomplete="off">
+      </div>
+      <button type="button" class="btn-primary" id="live-join-btn">Entrar</button>
+      <p class="live-error" id="live-join-error"></p>
+    </section>
+
+    <div id="live-room" hidden>
+      <div class="live-topbar">
+        <span class="live-status" id="live-status"><span class="dot-live"></span><span id="live-status-text">Conectando...</span></span>
+        <div class="live-actions" id="live-actions"></div>
+      </div>
+
+      <section class="card" id="live-admin-requests-card" hidden>
+        <h2>Pedidos para transmitir</h2>
+        <div id="live-requests-list"></div>
+        <p class="empty-msg" id="live-requests-empty">Nenhum pedido no momento.</p>
+      </section>
+
+      <div id="live-video-grid" class="video-grid"></div>
+      <p class="live-empty" id="live-empty-msg">Ninguém está transmitindo a tela no momento.</p>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast-stack" id="toast-stack"></div>
+
+<script src="/vendor/livekit-client.umd.js"></script>
+<script src="live.js"></script>
+
 <script>
 (function () {
   "use strict";
@@ -1057,8 +1274,10 @@
   var importHistoryInput = document.getElementById("import-history-input");
   var tabPedidosBtn = document.getElementById("tab-pedidos");
   var tabRankingBtn = document.getElementById("tab-ranking");
+  var tabTransmissaoBtn = document.getElementById("tab-transmissao");
   var viewPedidos = document.getElementById("view-pedidos");
   var viewRanking = document.getElementById("view-ranking");
+  var viewTransmissao = document.getElementById("view-transmissao");
   var rankingSearchInput = document.getElementById("ranking-search");
   var rankingTbody = document.getElementById("ranking-tbody");
   var rankingEmpty = document.getElementById("ranking-empty");
@@ -1554,17 +1773,23 @@
 
   function switchView(view) {
     var isPedidos = view === "pedidos";
+    var isRanking = view === "ranking";
+    var isTransmissao = view === "transmissao";
     viewPedidos.classList.toggle("active", isPedidos);
-    viewRanking.classList.toggle("active", !isPedidos);
+    viewRanking.classList.toggle("active", isRanking);
+    viewTransmissao.classList.toggle("active", isTransmissao);
     tabPedidosBtn.classList.toggle("active", isPedidos);
-    tabRankingBtn.classList.toggle("active", !isPedidos);
+    tabRankingBtn.classList.toggle("active", isRanking);
+    tabTransmissaoBtn.classList.toggle("active", isTransmissao);
     tabPedidosBtn.setAttribute("aria-selected", String(isPedidos));
-    tabRankingBtn.setAttribute("aria-selected", String(!isPedidos));
-    if (!isPedidos) renderRanking();
+    tabRankingBtn.setAttribute("aria-selected", String(isRanking));
+    tabTransmissaoBtn.setAttribute("aria-selected", String(isTransmissao));
+    if (isRanking) renderRanking();
   }
 
   tabPedidosBtn.addEventListener("click", function () { switchView("pedidos"); });
   tabRankingBtn.addEventListener("click", function () { switchView("ranking"); });
+  tabTransmissaoBtn.addEventListener("click", function () { switchView("transmissao"); });
   rankingSearchInput.addEventListener("input", renderRanking);
 
   function rerenderAll() {
